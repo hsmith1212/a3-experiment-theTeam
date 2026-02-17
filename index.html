@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html>
-  <body>
-    <div id="container"></div>
-    <!-- put some random styling, we can edit further later-->
-    <button id="start-experiment" style="margin:8px;">Start Experiment</button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Perception Experiment</title>
 
-    <!-- putting in all of the javascript files here for now, 
-     but we can change this later if we want to -->
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="js/graph.js"></script>
-    <script src="js/viz_bw.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/viz_gradient.js"></script>
-    <script src="js/viz_multicolor.js"></script>
-    <script src="js/experiment.js"></script>
-    <script src="js/analysis.js"></script>
-    <script src="js/grading.js"></script>
+  <!-- D3 -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+</head>
 
-    
-    
-  </body>
+<body>
+
+  <div id="container"></div>
+
+  <button id="start-experiment" style="margin:8px;">
+    Start Experiment
+  </button>
+
+  <!-- ORDER MATTERS -->
+
+  <!-- Data -->
+  <script src="js/data.js"></script>
+
+  <!-- Visualization files -->
+  <script src="js/graph.js"></script>
+  <script src="js/viz_bw.js"></script>
+  <script src="js/viz_gradient.js"></script>
+  <script src="js/viz_multicolor.js"></script>
+
+  <!-- Logic files -->
+  <script src="js/grading.js"></script>
+  <script src="js/storage.js"></script> <!-- IMPORTANT: must come before experiment.js -->
+  <script src="js/analysis.js"></script>
+  <script src="js/experiment.js"></script>
+
+</body>
 </html>
+
