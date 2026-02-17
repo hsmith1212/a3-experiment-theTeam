@@ -10,5 +10,5 @@ function graphGradient(numbers){
 };
 
 
-//here for testing for now
-graphGradient([45, 13, 98, 72, 34]);
+//here for testing=
+// graphGradient(generateTrials(1)[0]);

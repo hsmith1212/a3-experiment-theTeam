@@ -1,14 +1,13 @@
 /**
  * Return two random integers 5 times strictly between 1 and 100 (i.e. 2..99) with different proportions
- * Each call returns an array [n1, n2]. Values are guaranteed to be different.
- *
- * Example: const [a,b] = generateTwoRandomNumbers();
+ * Each call returns an array of 5 random values. Values are guaranteed to be different.
+ * The second and third values in the array will always be the ones marked
  */
 
-console.log(generateTrails(10)); // test generating 5 pairs of numbers
+console.log(generateTrials(10)[0]); // test generating 10 trials, and checking first trial's numbers
 
 
-function generateTwoRandomNumbers() {
+function generateFiveRandomNumbers() {
   const lower = 2;
   const upper = 99;
 
@@ -16,28 +15,26 @@ function generateTwoRandomNumbers() {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  const n1 = randomNum(lower, upper);
-  // ensure the second number is not equal to the first
-  let n2 = randomNum(lower, upper);
-  while (n2 === n1) {
-    n2 = randomNum(lower, upper);
+  const nums = new Set();
+  while (nums.size < 5) {
+    nums.add(randomNum(lower, upper));
   }
-  return [n1, n2];
+  return Array.from(nums);
 }
 
-//Generates a specified number of trails, each with a random length and random values that are not the same
-function generateTrails(numTrails) {
-    trailData = [];
-    for (let i = 0; i < numTrails; i++) {
-        const randNumTemp = generateTwoRandomNumbers();
-        for (let j = 0; j < trailData.length; j++) {
-            if (trailData[j][0] === randNumTemp[0] && trailData[j][1] === randNumTemp[1]) {
-                // If the generated pair is the same as an existing pair, generate a new one
-                randNumTemp = generateTwoRandomNumbers();
-                j = -1; // Restart the loop to check the new pair against all existing pairs
+//Generates a specified number of trails, each with a length of 5 and random values that are not the same
+function generateTrials(numTrials) {
+    trialData = [];
+    for (let i = 0; i < numTrials; i++) {
+        const randNumTemp = generateFiveRandomNumbers();
+        for (let j = 0; j < trialData.length; j++) {
+            if (trialData[j][0] === randNumTemp[0] && trialData[j][1] === randNumTemp[1]) {
+                // If the generated trial is the same as an existing trial, generate a new one
+                randNumTemp = generateFiveRandomNumbers();
+                j = -1; // Restart the loop to check the new trial against existing trials
             }
         }
-        trailData.push(randNumTemp);
+        trialData.push(randNumTemp);
     }
-    return trailData; 
+    return trialData; 
 }
