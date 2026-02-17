@@ -1,23 +1,158 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <div id="container"></div>
-    <!-- put some random styling, we can edit further later-->
-    <button id="start-experiment" style="margin:8px;">Start Experiment</button>
-
-    <!-- putting in all of the javascript files here for now, 
-     but we can change this later if we want to -->
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-    <script src="js/graph.js"></script>
-    <script src="js/viz_bw.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/viz_gradient.js"></script>
-    <script src="js/viz_multicolor.js"></script>
-    <script src="js/experiment.js"></script>
-    <script src="js/analysis.js"></script>
-    <script src="js/grading.js"></script>
-
+<head>
+  <meta charset="UTF-8">
+  <title>Cleveland-McGill Experiment - Minimal Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
     
+    .screen {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: none;
+    }
     
-  </body>
+    .screen.active {
+      display: block;
+    }
+    
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+    
+    button:hover {
+      background: #45a049;
+    }
+    
+    input[type="text"],
+    input[type="number"] {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    
+    #viz-container {
+      background: #fafafa;
+      border: 2px solid #ddd;
+      padding: 20px;
+      margin: 20px 0;
+      min-height: 300px;
+      border-radius: 4px;
+    }
+    
+    .error {
+      color: #d32f2f;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .info {
+      background: #e3f2fd;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #2196F3;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- INTRO SCREEN -->
+  <div id="screen-intro" class="screen active">
+    <h1>Cleveland & McGill Experiment</h1>
+    <p>In this experiment, you'll judge what percentage the <strong>smaller marked value</strong> is of the <strong>larger marked value</strong>.</p>
+    <p>You'll complete 60 trials across 3 different visualization types.</p>
+    <div>
+      <label>Participant ID:</label><br>
+      <input type="text" id="participant-id" placeholder="e.g., P001" value="TestUser">
+    </div>
+    <button id="btn-start">Start Experiment</button>
+  </div>
+
+  <!-- TRIAL SCREEN -->
+  <div id="screen-trial" class="screen">
+    <div class="info">
+      <strong id="trial-counter">Trial 1 of 60</strong><br>
+      Condition: <span id="condition-label">Loading...</span>
+    </div>
+    
+    <h2>What percentage is the smaller marked value of the larger?</h2>
+    
+    <div id="viz-container">
+      <!-- Visualization will render here -->
+    </div>
+    
+    <div>
+      <label>Your answer (0-100):</label><br>
+      <input type="number" id="response-input" min="0" max="100" step="1" placeholder="Enter percentage">
+      <button id="response-submit">Submit Answer</button>
+    </div>
+    
+    <div id="response-error" class="error"></div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="screen-end" class="screen">
+    <h1>✅ Experiment Complete!</h1>
+    <p>Thank you for participating. Copy the CSV data below:</p>
+    <textarea id="csv-output" readonly></textarea>
+    <div>
+      <button id="btn-copy-csv">Copy to Clipboard</button>
+      <button id="btn-reset">Run Another Participant</button>
+    </div>
+  </div>
+
+  <!-- Load D3 (for your teammates' visualizations) -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <!-- Load experiment.js -->
+  <script src="js/experiment.js"></script>
+
+  <script>
+    // Wire up the reset button
+    document.addEventListener('DOMContentLoaded', () => {
+      const resetBtn = document.getElementById('btn-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (window.Experiment) {
+            window.Experiment.reset();
+          }
+        });
+      }
+      
+      // Debug logging
+      console.log('%c=== EXPERIMENT INITIALIZED ===', 'color: green; font-weight: bold');
+      console.log('Intro screen visible?', document.getElementById('screen-intro').style.display !== 'none');
+      console.log('window.Experiment loaded?', !!window.Experiment);
+    });
+  </script>
+
+</body>
 </html>
