@@ -121,6 +121,7 @@
     <textarea id="csv-output" readonly></textarea>
     <div>
       <button id="btn-copy-csv">Copy to Clipboard</button>
+      <button id="btn-download-csv">Download CSV File</button>
       <button id="btn-reset">Run Another Participant</button>
     </div>
   </div>
@@ -162,6 +163,11 @@
      //const submitBtn = document.getElementById('response-submit');
       const resetBtn  = document.getElementById('btn-reset');
       const copyBtn   = document.getElementById('btn-copy-csv');
+      const downloadBtn = document.getElementById('btn-download-csv');
+      downloadBtn?.addEventListener('click', () => {
+        const state = window.Experiment.getState();
+        window.Storage.downloadCSV(state.participantId);
+      });
 
       // START: pass participantId to experiment (if your Experiment supports it)
       // experiment.js wires up start button itself
