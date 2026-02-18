@@ -158,45 +158,21 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const startBtn  = document.getElementById('btn-start');
-      const submitBtn = document.getElementById('response-submit');
+     // const startBtn  = document.getElementById('btn-start');
+     //const submitBtn = document.getElementById('response-submit');
       const resetBtn  = document.getElementById('btn-reset');
       const copyBtn   = document.getElementById('btn-copy-csv');
 
       // START: pass participantId to experiment (if your Experiment supports it)
-      startBtn?.addEventListener('click', () => {
-        const pid = (document.getElementById('participant-id')?.value || '').trim();
-        if (!pid) return alert('Please enter a Participant ID.');
+      // experiment.js wires up start button itself
 
-        // clear old data for clean run (optional; comment out if you want cumulative)
-        // window.Storage?.clearAll?.();
-
-        // If your teammate’s Experiment has a start(pid)
-        if (window.Experiment?.start) {
-          window.Experiment.start(pid);
-          showScreen('screen-trial');
-          return;
-        }
-
-        // Fallback: if experiment.js listens to its own internal start button,
-        // you’ll need to adjust experiment.js or rename button ids.
-        alert('Experiment.start() not found. Your experiment.js may use different function names.');
-      });
-
-      // SUBMIT: send response to experiment (if supported)
-      submitBtn?.addEventListener('click', () => {
-        if (window.Experiment?.submitResponse) {
-          window.Experiment.submitResponse();
-          return;
-        }
-        alert('Experiment.submitResponse() not found. Your experiment.js may use different function names.');
-      });
+      // SUBMIT: handled by experiment.js automatically
+      // experiment.js wires up submit button itself
+ 
 
       // RESET: new participant
       resetBtn?.addEventListener('click', () => {
         if (window.Experiment?.reset) window.Experiment.reset();
-        showScreen('screen-intro');
-        document.getElementById('response-input').value = '';
       });
 
       // COPY CSV

@@ -3,16 +3,10 @@
  * =============
  * Core experiment controller for the Cleveland-McGill replication.
  *
- * INTEGRATION GUIDE FOR TEAMMATES
- * ─────────────────────────────────────────────────────────────────
- * This file expects the following globals/modules to exist by the
- * time experiment.js runs. Each section is clearly marked so you
- * can drop in your implementations without touching this file.
- *
- *  data.js      → window.DataGen
+ *  DONEdata.js      → window.DataGen
  *                   .generateTrialData(n)   // returns { values, marked }
  *
- *  viz_bw.js    → window.VizBW
+ *  DONEviz_bw.js    → window.VizBW
  *                   .render(container, trialData)
  *                   .clear(container)
  *
@@ -42,11 +36,7 @@
 // ─── Experiment Configuration ────────────────────────────────────────────────
 
 const CONFIG = {
-  // How many data points per trial (Cleveland & McGill used 5 or 10)
   pointsPerTrial: 10,
-
-  // Number of trials per visualization type, per participant
-  // 20 per type → 60 total trials per participant
   trialsPerCondition: 20,
 
   // Conditions to test — keys map to their viz module and a human label
@@ -95,19 +85,17 @@ const CONFIG = {
 
 const state = {
   participantId: null,
-  trialQueue: [],       // array of { conditionId, trialIndex }  — shuffled
-  currentTrialIndex: 0, // pointer into trialQueue
+  trialQueue: [],       
+  currentTrialIndex: 0, 
   currentTrialData: null,
   currentCondition: null,
-  results: [],          // accumulates trial records
-  startTime: null,      // ms — set when trial is shown
+  results: [],          
+  startTime: null,      
 };
 
 // ─── Utility Helpers ─────────────────────────────────────────────────────────
 
-/**
- * Fisher-Yates shuffle — mutates array in place, returns it.
- */
+
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -116,20 +104,12 @@ function shuffle(arr) {
   return arr;
 }
 
-/**
- * Safely retrieve a DOM element; throws a descriptive error if missing.
- * Helps teammates catch missing HTML early.
- */
 function el(id) {
   const node = document.getElementById(id);
   if (!node) throw new Error(`[experiment.js] Missing DOM element: #${id}`);
   return node;
 }
 
-/**
- * Show one screen, hide all others.
- * Screens are identified by the ids in CONFIG.dom.
- */
 function showScreen(screenId) {
   // Hide all screens
   ['screen-intro', 'screen-trial', 'screen-response', 'screen-end']
@@ -146,12 +126,8 @@ function showScreen(screenId) {
   }
 }
 
-// ─── Trial Queue Builder ──────────────────────────────────────────────────────
+// ─── Trial Queue ──────────────────────────────────────────────────────
 
-/**
- * Build a fully-shuffled list of (condition, trialIndex) pairs.
- * e.g. trialsPerCondition = 20, conditions = 3 → 60 entries, randomized.
- */
 function buildTrialQueue() {
   const queue = [];
   CONFIG.conditions.forEach(condition => {

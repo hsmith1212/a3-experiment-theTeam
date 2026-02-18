@@ -1,10 +1,9 @@
 /**
+ * Exposes window.DataGen.generateTrialData(n)
  * Return two random integers 5 times strictly between 1 and 100 (i.e. 2..99) with different proportions
  * Each call returns an array of 5 random values. Values are guaranteed to be different.
  * The second and third values in the array will always be the ones marked
  */
-
-console.log(generateTrials(10)[0]); // test generating 10 trials, and checking first trial's numbers
 
 
 function generateFiveRandomNumbers() {
@@ -22,19 +21,27 @@ function generateFiveRandomNumbers() {
   return Array.from(nums);
 }
 
-//Generates a specified number of trails, each with a length of 5 and random values that are not the same
-function generateTrials(numTrials) {
-    trialData = [];
-    for (let i = 0; i < numTrials; i++) {
-        const randNumTemp = generateFiveRandomNumbers();
-        for (let j = 0; j < trialData.length; j++) {
-            if (trialData[j][0] === randNumTemp[0] && trialData[j][1] === randNumTemp[1]) {
-                // If the generated trial is the same as an existing trial, generate a new one
-                randNumTemp = generateFiveRandomNumbers();
-                j = -1; // Restart the loop to check the new trial against existing trials
-            }
-        }
-        trialData.push(randNumTemp);
-    }
-    return trialData; 
-}
+window.DataGen = {
+  /**
+   * generates specified number of trials, each with length of 5 and random values that are not the same
+   * 
+   */
+  generateTrialData:function(n) {
+    const values = generateFiveRandomNumbers();
+    const marked = [1,2];
+
+    const valueA = values[marked[0]];
+    const valueB = values[marked[1]];
+    const smaller = Math.min(valueA, valueB);
+    const larger = Math.max(valueA, valueB);
+    const truePercentage = Math.round((smaller/larger) * 100);
+
+    return{
+      values: values,
+      marked: marked,
+      truePercentage : truePercentage
+    };
+  }  
+};
+
+console.log('data.js Test trial:', window.DataGen.generateTrialData(5));

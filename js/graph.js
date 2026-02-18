@@ -2,7 +2,7 @@
 // bar style determines the fill and stroke of the bars
 // color scale is an optional argument that will be used for the gradient graphs
 //      in order to include a legend
-function graph(numbers, barStyle, colorScale = null){
+function graph(numbers, barStyle, colorScale = null, container = null){
     const height = 300;
     const width = 300;
     const margin = 40;
@@ -14,7 +14,8 @@ function graph(numbers, barStyle, colorScale = null){
         .range([height - margin, margin]);
 
     //might have to edit if changes
-    const svg = d3.select("#container")
+    const target = container || "#container";
+    const svg = d3.select(target)
         .append("svg")
         .attr("width", width)
         .attr("height", height);
