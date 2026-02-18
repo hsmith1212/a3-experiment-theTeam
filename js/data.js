@@ -1,4 +1,5 @@
 /**
+ * Exposes window.DataGen.generateTrialData(n)
  * Return two random integers 5 times strictly between 1 and 100 (i.e. 2..99) with different proportions
  * Each call returns an array of 5 random values. Values are guaranteed to be different.
  * The second and third values in the array will always be the ones marked
