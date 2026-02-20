@@ -54,7 +54,7 @@ Handles:
 
 # Findings
 
-### PUT IN GRAPH ###
+![logErrors](img/log_errors.png)
 
 Utilizing Excel, we built confidence intervals for the average log error in proportion perception for each visualization type. The confidence intervals are as follows:
 
