@@ -7,35 +7,29 @@
     const width = 500;
     const height = 250;
     const margin = {top: 10, right: 30, bottom: 30, left: 90};
-    // place holders for now, will replace when we actually have the errors
-    const logerrors = [1, 1.5, 2];
+    // values gotten from excel
+    const logerrors = [1.494645726, 1.596285059, 1.512377863];
     const confidenceIntervals = [
-        [0.8, 1.2],
-        [1.3, 1.7],
-        [1.8, 2.2]
+        [1.324811024, 1.664480427],
+        [1.436461666, 1.756108452],
+        [1.340616113, 1.684139613]
     ];
 
     const svg = d3.create('svg')
         .attr('width', width)
         .attr('height', height);
-
-    svg.append('rect')
-        .attr('width', width-margin.left - margin.right)
-        .attr('height', height - margin.top - (margin.bottom * 2.2)) // give space for title and axis labels
-        .attr('x', margin.left)
-        .attr('y', margin.top)
-        .attr('fill', '#D3D3D3'); //googled light gray hex code
     
     //for log errors and confidence intervals
     const xscale = d3.scaleLinear()
-        .domain([0, 3]) //placeholder, will replace with actual log error range
+        .domain([1.2, 1.8]) 
         .range([margin.left, width - margin.right]);
 
     // making x axis and title
     // EDIT more attributes once we know the actual errors
     svg.append('g')
         .attr('transform', `translate(0, ${height - (margin.bottom * 2.2)})`) // increase margin to give space for title
-        .call(d3.axisBottom(xscale));
+        .call(d3.axisBottom(xscale)
+            .ticks(5));
 
     svg.append("text")
         .attr("text-anchor", "middle")
