@@ -80,7 +80,7 @@
 </head>
 <body>
 
-  <!-- INTRO SCREEN -->
+  <!-- intro screen -->
   <div id="screen-intro" class="screen active">
     <h1>Cleveland & McGill Experiment</h1>
     <p>In this experiment, you'll judge what percentage the <strong>smaller marked value</strong> is of the <strong>larger marked value</strong>.</p>
@@ -92,7 +92,7 @@
     <button id="btn-start">Start Experiment</button>
   </div>
 
-  <!-- TRIAL SCREEN -->
+  <!-- trial screen -->
   <div id="screen-trial" class="screen">
     <div class="info">
       <strong id="trial-counter">Trial 1 of 60</strong><br>
@@ -102,7 +102,7 @@
     <h2>What percentage is the smaller marked value of the larger?</h2>
 
     <div id="viz-container">
-      <!-- Visualization will render here -->
+
     </div>
 
     <div>
@@ -114,7 +114,7 @@
     <div id="response-error" class="error"></div>
   </div>
 
-  <!-- END SCREEN -->
+  <!-- end screen -->
   <div id="screen-end" class="screen">
     <h1>✅ Experiment Complete!</h1>
     <p>Thank you for participating. Copy the CSV data below:</p>
@@ -126,32 +126,18 @@
     </div>
   </div>
 
-  <!-- ========================= -->
-  <!-- Scripts (ORDER MATTERS)   -->
-  <!-- ========================= -->
-
-  <!-- D3 -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
-  <!-- Dependencies your experiment typically needs -->
   <script src="js/data.js"></script>
   <script src="js/graph.js"></script>
   <script src="js/viz_bw.js"></script>
   <script src="js/viz_gradient.js"></script>
   <script src="js/viz_multicolor.js"></script>
-
-  <!-- Scoring + storage -->
   <script src="js/grading.js"></script>
   <script src="js/storage.js"></script>
-
-  <!-- Optional -->
-  <script src="js/analysis.js"></script>
-
-  <!-- Experiment LAST -->
   <script src="js/experiment.js"></script>
 
   <script>
-    // Small helpers to switch screens
     function showScreen(whichId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(whichId);
@@ -159,8 +145,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-     // const startBtn  = document.getElementById('btn-start');
-     //const submitBtn = document.getElementById('response-submit');
       const resetBtn  = document.getElementById('btn-reset');
       const copyBtn   = document.getElementById('btn-copy-csv');
       const downloadBtn = document.getElementById('btn-download-csv');
@@ -168,20 +152,9 @@
         const state = window.Experiment.getState();
         window.Storage.downloadCSV(state.participantId);
       });
-
-      // START: pass participantId to experiment (if your Experiment supports it)
-      // experiment.js wires up start button itself
-
-      // SUBMIT: handled by experiment.js automatically
-      // experiment.js wires up submit button itself
- 
-
-      // RESET: new participant
       resetBtn?.addEventListener('click', () => {
         if (window.Experiment?.reset) window.Experiment.reset();
       });
-
-      // COPY CSV
       copyBtn?.addEventListener('click', async () => {
         const text = document.getElementById('csv-output')?.value || '';
         if (!text) return alert('No CSV data yet.');
@@ -189,8 +162,6 @@
         alert('CSV copied to clipboard!');
       });
 
-      // OPTIONAL: when experiment ends, fill csv-output from Storage
-      // Call this at the end of your experiment.js, OR you can manually run it in console.
       window.renderCSVOutput = () => {
         const csv = window.Storage?.exportCSV?.() || '';
         const out = document.getElementById('csv-output');
