@@ -1,5 +1,6 @@
 Link to experiment: https://hsmith1212.github.io/a3-experiment-theTeam/ 
 
+Group Members: Holly Smith, Eloisa Salcedo, Esther Mao, Maria Anastasia Masouti
 
 # Overview: 
 
