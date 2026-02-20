@@ -2,6 +2,33 @@
 <div id="container"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
+<!-- referenced: https://mimo.org/glossary/html/tooltip-->
+<style>
+    .tooltip {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1000;
+    }
+    .tooltip img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 3px;
+    }
+    .tooltip .title {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+</style>
+
 <script type="module">
     console.log('working')
     const width = 500;
@@ -14,10 +41,18 @@
         [1.436461666, 1.756108452],
         [1.340616113, 1.684139613]
     ];
+    const chartImgs = ['../img/bw_viz.png', '../img/multicolor_viz.png', '../img/gradient_viz.png'];
+    const labels = ['Black & White', 'Multicolor', 'Gradient'];
+    
 
     const svg = d3.create('svg')
         .attr('width', width)
         .attr('height', height);
+
+    // Create tooltip div
+    const tooltip = d3.select('body')
+        .append('div')
+        .attr('class', 'tooltip');
     
     //for log errors and confidence intervals
     const xscale = d3.scaleLinear()
@@ -25,7 +60,6 @@
         .range([margin.left, width - margin.right]);
 
     // making x axis and title
-    // EDIT more attributes once we know the actual errors
     svg.append('g')
         .attr('transform', `translate(0, ${height - (margin.bottom * 2.2)})`) // increase margin to give space for title
         .call(d3.axisBottom(xscale)
@@ -41,6 +75,7 @@
     const graphSpace = height - margin.top - (margin.bottom * 2.2); // calculate available space for graph
     const spacing = graphSpace / (logerrors.length + 1); // calculate spacing based on number of log errors
     const yVals = [graphSpace / 2 - spacing, graphSpace / 2, graphSpace / 2 + spacing].map(y => y + margin.top); // stagger y values for visibility
+    
 
     svg.selectAll('circle')
         .data(logerrors)
@@ -49,7 +84,29 @@
         .attr('cx', d => xscale(d))
         .attr('cy', (d, i) => yVals[i]) // use staggered y values
         .attr('r', 5)
-        .attr('fill', 'black');
+        .attr('fill', 'black')
+        .on('mouseover', function(event, d) {
+            console.log(`Log Error: ${d}`);
+            const index = logerrors.indexOf(d);
+            
+            // Show tooltip
+            tooltip.transition()
+                .duration(200)
+                .style('opacity', 1);
+                
+            tooltip.html(`
+                <div class="title">${labels[index]} Chart Example</div>
+                <img src="${chartImgs[index]}" alt="${labels[index]} chart example">
+            `)
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px');
+        })
+        .on('mouseout', function() {
+            // Hide tooltip
+            tooltip.transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
 
     // putting confidence intervals
     // used Claude AI to edit this code. Originally was using 'line' instead of 'ci-line' and it was not working, but now it is. 
