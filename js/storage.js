@@ -1,6 +1,4 @@
 /**
- * storage.js
- * ==========
  * Persists experiment trial records to localStorage and supports CSV export.
  * Compatible with experiment.js expectations:
  *   window.Storage.save(trialRecord)
@@ -11,7 +9,7 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'cm_experiment_records_v1'; // change if you want a fresh dataset
+  const STORAGE_KEY = 'cm_experiment_records_v1'; 
 
   function _read() {
     try {
@@ -30,7 +28,7 @@
   function save(trialRecord) {
     const records = _read();
 
-    // Optional: prevent accidental duplicates (same participant + trialNumber)
+    // prevent accidental duplicates (same participant + trialNumber)
     const dupe = records.find(r =>
       r.participantId === trialRecord.participantId &&
       r.trialNumber === trialRecord.trialNumber
@@ -82,12 +80,53 @@
     return lines.join('\n');
   }
 
+  /**
+   * download CSV file locally
+   */
+  function downloadCSV(participantId = null, filename = null) {
+    const csv = exportCSV(participantId);
+
+    if (!csv) {
+      console.warn('[storage.js] No data to download');
+      alert('No data available to download. Complete at least one trial first');
+      return;
+    }
+
+    if (!filename) {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0,19);
+      if (participantId) {
+        filename = `experiment_${participantId}_${timestamp}.csv`;
+      } else {
+        filename = `experiment_all_${timestamp}.csv`;
+      }
+    }
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+    
+    console.log(`[storage.js] downloaded: ${filename}`);
+  }
+
   // Expose module
   window.Storage = {
     save,
     getAll,
     exportCSV,
+    downloadCSV,
     clearAll,
     key: STORAGE_KEY
   };
+
+  console.log('[storage.js] loaded successfully');
 })();

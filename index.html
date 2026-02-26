@@ -80,7 +80,7 @@
 </head>
 <body>
 
-  <!-- INTRO SCREEN -->
+  <!-- intro screen -->
   <div id="screen-intro" class="screen active">
     <h1>Cleveland & McGill Experiment</h1>
     <p>In this experiment, you'll judge what percentage the <strong>smaller marked value</strong> is of the <strong>larger marked value</strong>.</p>
@@ -92,7 +92,7 @@
     <button id="btn-start">Start Experiment</button>
   </div>
 
-  <!-- TRIAL SCREEN -->
+  <!-- trial screen -->
   <div id="screen-trial" class="screen">
     <div class="info">
       <strong id="trial-counter">Trial 1 of 60</strong><br>
@@ -102,7 +102,7 @@
     <h2>What percentage is the smaller marked value of the larger?</h2>
 
     <div id="viz-container">
-      <!-- Visualization will render here -->
+
     </div>
 
     <div>
@@ -114,43 +114,30 @@
     <div id="response-error" class="error"></div>
   </div>
 
-  <!-- END SCREEN -->
+  <!-- end screen -->
   <div id="screen-end" class="screen">
     <h1>✅ Experiment Complete!</h1>
     <p>Thank you for participating. Copy the CSV data below:</p>
     <textarea id="csv-output" readonly></textarea>
     <div>
       <button id="btn-copy-csv">Copy to Clipboard</button>
+      <button id="btn-download-csv">Download CSV File</button>
       <button id="btn-reset">Run Another Participant</button>
     </div>
   </div>
 
-  <!-- ========================= -->
-  <!-- Scripts (ORDER MATTERS)   -->
-  <!-- ========================= -->
-
-  <!-- D3 -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
-  <!-- Dependencies your experiment typically needs -->
   <script src="js/data.js"></script>
   <script src="js/graph.js"></script>
   <script src="js/viz_bw.js"></script>
   <script src="js/viz_gradient.js"></script>
   <script src="js/viz_multicolor.js"></script>
-
-  <!-- Scoring + storage -->
   <script src="js/grading.js"></script>
   <script src="js/storage.js"></script>
-
-  <!-- Optional -->
-  <script src="js/analysis.js"></script>
-
-  <!-- Experiment LAST -->
   <script src="js/experiment.js"></script>
 
   <script>
-    // Small helpers to switch screens
     function showScreen(whichId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(whichId);
@@ -158,48 +145,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const startBtn  = document.getElementById('btn-start');
-      const submitBtn = document.getElementById('response-submit');
       const resetBtn  = document.getElementById('btn-reset');
       const copyBtn   = document.getElementById('btn-copy-csv');
-
-      // START: pass participantId to experiment (if your Experiment supports it)
-      startBtn?.addEventListener('click', () => {
-        const pid = (document.getElementById('participant-id')?.value || '').trim();
-        if (!pid) return alert('Please enter a Participant ID.');
-
-        // clear old data for clean run (optional; comment out if you want cumulative)
-        // window.Storage?.clearAll?.();
-
-        // If your teammate’s Experiment has a start(pid)
-        if (window.Experiment?.start) {
-          window.Experiment.start(pid);
-          showScreen('screen-trial');
-          return;
-        }
-
-        // Fallback: if experiment.js listens to its own internal start button,
-        // you’ll need to adjust experiment.js or rename button ids.
-        alert('Experiment.start() not found. Your experiment.js may use different function names.');
+      const downloadBtn = document.getElementById('btn-download-csv');
+      downloadBtn?.addEventListener('click', () => {
+        const state = window.Experiment.getState();
+        window.Storage.downloadCSV(state.participantId);
       });
-
-      // SUBMIT: send response to experiment (if supported)
-      submitBtn?.addEventListener('click', () => {
-        if (window.Experiment?.submitResponse) {
-          window.Experiment.submitResponse();
-          return;
-        }
-        alert('Experiment.submitResponse() not found. Your experiment.js may use different function names.');
-      });
-
-      // RESET: new participant
       resetBtn?.addEventListener('click', () => {
         if (window.Experiment?.reset) window.Experiment.reset();
-        showScreen('screen-intro');
-        document.getElementById('response-input').value = '';
       });
-
-      // COPY CSV
       copyBtn?.addEventListener('click', async () => {
         const text = document.getElementById('csv-output')?.value || '';
         if (!text) return alert('No CSV data yet.');
@@ -207,8 +162,6 @@
         alert('CSV copied to clipboard!');
       });
 
-      // OPTIONAL: when experiment ends, fill csv-output from Storage
-      // Call this at the end of your experiment.js, OR you can manually run it in console.
       window.renderCSVOutput = () => {
         const csv = window.Storage?.exportCSV?.() || '';
         const out = document.getElementById('csv-output');
